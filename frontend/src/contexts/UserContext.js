@@ -8,7 +8,7 @@ const UserContext = React.createContext();
 const UserContextProvider = ({ children }) => {
   const [loggedInUser, setLoggedInUser, isLoading] = useLocalStorage('userData');
   const [userInfo, setUserInfo] = useState(null);
-  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
+  const [loadingUserInfo, setLoadingUserInfo] = useState(false);
 
   useEffect(() => {
     setUserInfo(null);
@@ -16,8 +16,12 @@ const UserContextProvider = ({ children }) => {
       JoblyApi.getUserDetails(loggedInUser.username)
         .then(data => {
           setUserInfo(data);
-          setLoadingUserInfo(false); 
+        })
+        .finally(() => {
+          setLoadingUserInfo(false);
         });
+    } else {
+      setLoadingUserInfo(false);
     }
   }, [loggedInUser, setUserInfo])
 
